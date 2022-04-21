@@ -1,41 +1,89 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 const Home: NextPage = () => {
+  const router = useRouter();
+
+  // Erro : TypeError: Cannot read properties of null (reading 'useState')
+
+  const [bub_acertos, setBubAcertos] = useState(0);
+  const [bub_erros, setBubErros] = useState(0);
+  const [bub_tentativas, setBubTentativas] = useState(0);
+  const [dij_acertos, setDijAcertos] = useState(0);
+  const [dij_erros, setDijErros] = useState(0);
+  const [dij_tentativas, setDijTentativas] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      const item2 = JSON.parse(localStorage.getItem(`bubleSort`));
+      const { bub_a, bub_e, bub_t } = item2;
+      setBubAcertos(bub_a);
+      setBubErros(bub_e);
+      setBubTentativas(bub_t);
+      const item = JSON.parse(localStorage.getItem(`dijkstra`));
+      const { acertos, erros, tentativas } = item;
+      setDijAcertos(acertos);
+      setDijErros(erros);
+      setDijTentativas(tentativas);
+    };
+  }, []);
+
   return (
     <div className="wrapper">
       <div className="table">
         <div className="row header">
-          <div className="cell">Name</div>
-          <div className="cell">Age</div>
-          <div className="cell">Occupation</div>
-          <div className="cell">Location</div>
+          <div className="cell">Algoritmo</div>
+          <div className="cell">Aprender</div>
+          <div className="cell">Acertos</div>
+          <div className="cell">Erros</div>
+          <div className="cell">Tentativas</div>
+          <div className="cell">Última tentativa</div>
         </div>
         <div className="row">
           <div className="cell" data-title="Name">
-            Luke Peters
+            <Link
+              href={{ pathname: "/coding", query: { algoritmo: "dijkstra" } }}
+            >
+              <a style={{ color: "blue" }}>Algoritmo de Dijkstra</a>
+            </Link>
           </div>
           <div className="cell" data-title="Age">
-            25
+            Icon Texto, Icon Vídeo
           </div>
           <div className="cell" data-title="Occupation">
-            Freelance Web Developer
+            {dij_acertos}
           </div>
           <div className="cell" data-title="Location">
-            Brookline, MA
+            {dij_erros}
+          </div>
+          <div className="cell" data-title="Location">
+            {dij_tentativas}
+          </div>
+          <div className="cell" data-title="Location">
+            17/04/2022
           </div>
         </div>
         <div className="row">
           <div className="cell" data-title="Name">
-            Joseph Smith
+            <Link
+              href={{ pathname: "/coding", query: { algoritmo: "bubleSort" } }}
+            >
+              <a style={{ color: "blue" }}>Buble Sort</a>
+            </Link>
           </div>
           <div className="cell" data-title="Age">
-            27
+            Icon Texto, Icon Vídeo
           </div>
           <div className="cell" data-title="Occupation">
-            Project Manager
+            a{bub_acertos}
+          </div>
+          <div className="cell" data-title="Location">
+            b{bub_erros}
+          </div>
+          <div className="cell" data-title="Location">
+            c{bub_tentativas}
           </div>
           <div className="cell" data-title="Location">
             Somerville, MA
@@ -54,6 +102,12 @@ const Home: NextPage = () => {
           <div className="cell" data-title="Location">
             Arlington, MA
           </div>
+          <div className="cell" data-title="Location">
+            Arlington, MA
+          </div>
+          <div className="cell" data-title="Location">
+            Arlington, MA
+          </div>
         </div>
         <div className="row">
           <div className="cell" data-title="Name">
@@ -68,146 +122,11 @@ const Home: NextPage = () => {
           <div className="cell" data-title="Location">
             Boston, MA
           </div>
-        </div>
-      </div>
-      <div className="table">
-        <div className="row header green">
-          <div className="cell">Product</div>
-          <div className="cell">Unit Price</div>
-          <div className="cell">Quantity</div>
-          <div className="cell">Date Sold</div>
-          <div className="cell">Status</div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Product">
-            Solid oak work table
+          <div className="cell" data-title="Location">
+            Arlington, MA
           </div>
-          <div className="cell" data-title="Unit Price">
-            $800
-          </div>
-          <div className="cell" data-title="Quantity">
-            10
-          </div>
-          <div className="cell" data-title="Date Sold">
-            03/15/2014
-          </div>
-          <div className="cell" data-title="Status">
-            Waiting for Pickup
-          </div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Product">
-            Leather iPhone wallet
-          </div>
-          <div className="cell" data-title="Unit Price">
-            $45
-          </div>
-          <div className="cell" data-title="Quantity">
-            120
-          </div>
-          <div className="cell" data-title="Date Sold">
-            02/28/2014
-          </div>
-          <div className="cell" data-title="Status">
-            In Transit
-          </div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Product">
-            27 Apple Thunderbolt displays
-          </div>
-          <div className="cell" data-title="Unit Price">
-            $1000
-          </div>
-          <div className="cell" data-title="Quantity">
-            25
-          </div>
-          <div className="cell" data-title="Date Sold">
-            02/10/2014
-          </div>
-          <div className="cell" data-title="Status">
-            Delivered
-          </div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Product">
-            Bose studio headphones
-          </div>
-          <div className="cell" data-title="Unit Price">
-            $60
-          </div>
-          <div className="cell" data-title="Quantity">
-            90
-          </div>
-          <div className="cell" data-title="Date Sold">
-            01/14/2014
-          </div>
-          <div className="cell" data-title="Status">
-            Delivered
-          </div>
-        </div>
-      </div>
-      <div className="table">
-        <div className="row header blue">
-          <div className="cell">Username</div>
-          <div className="cell">Email</div>
-          <div className="cell">Password</div>
-          <div className="cell">Active</div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Username">
-            ninjalug
-          </div>
-          <div className="cell" data-title="Email">
-            misterninja@hotmail.com
-          </div>
-          <div className="cell" data-title="Password">
-            ************
-          </div>
-          <div className="cell" data-title="Active">
-            Yes
-          </div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Username">
-            jsmith41
-          </div>
-          <div className="cell" data-title="Email">
-            joseph.smith@gmail.com
-          </div>
-          <div className="cell" data-title="Password">
-            ************
-          </div>
-          <div className="cell" data-title="Active">
-            No
-          </div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Username">
-            1337hax0r15
-          </div>
-          <div className="cell" data-title="Email">
-            hackerdude1000@aol.com
-          </div>
-          <div className="cell" data-title="Password">
-            ************
-          </div>
-          <div className="cell" data-title="Active">
-            Yes
-          </div>
-        </div>
-        <div className="row">
-          <div className="cell" data-title="Username">
-            hairyharry19
-          </div>
-          <div className="cell" data-title="Email">
-            harryharry@gmail.com
-          </div>
-          <div className="cell" data-title="Password">
-            ************
-          </div>
-          <div className="cell" data-title="Active">
-            Yes
+          <div className="cell" data-title="Location">
+            Arlington, MA
           </div>
         </div>
       </div>
