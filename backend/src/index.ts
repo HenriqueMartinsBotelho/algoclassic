@@ -53,20 +53,25 @@ route.post("/python/:algoritmo", (req: Request, res: Response) => {
               reject();
               throw err;
             }
-            if (results[0] === "True") {
+            let output = JSON.stringify(
+              results[0].slice(1, -1).split(", ").map(Number)
+            );
+            let expected = JSON.stringify(testCases[key][1]);
+            if (output == expected) {
               console.log("ffffffffff", results);
               console.log("pppp", testCases);
               testCaseResults.push({
                 input: testCases[key][0],
-                expected: testCases[key][1],
+                output: output,
+                expected: expected,
                 ans: "True",
               });
             } else {
-              console.log(testCases[key]);
               testCaseResults.push({
                 input: testCases[key][0],
-                expected: testCases[key][1],
-                ans: "True",
+                output: output,
+                expected: expected,
+                ans: "False",
               });
             }
             // testCaseResults.push(results[0]);

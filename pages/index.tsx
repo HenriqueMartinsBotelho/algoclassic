@@ -2,11 +2,10 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import { AiFillYoutube } from "react-icons/ai";
 
 const Home: NextPage = () => {
   const router = useRouter();
-
-  // Erro : TypeError: Cannot read properties of null (reading 'useState')
 
   const [bub_acertos, setBubAcertos] = useState(0);
   const [bub_erros, setBubErros] = useState(0);
@@ -14,20 +13,30 @@ const Home: NextPage = () => {
   const [dij_acertos, setDijAcertos] = useState(0);
   const [dij_erros, setDijErros] = useState(0);
   const [dij_tentativas, setDijTentativas] = useState(0);
+  const [sel_acertos, setSelAcertos] = useState(0);
+  const [sel_erros, setSelErros] = useState(0);
+  const [sel_tentativas, setSelTentativas] = useState(0);
+
+  /*
+  const item2 = JSON.parse(localStorage.getItem(`bubleSort`)); (NextJS não deixa)
+ Quando você está renderizando no servidor, você não tem um navegador e, 
+ portanto, não tem acesso a todas as APIs que o navegador fornece, 
+ incluindo localStorage e por isso tem que colocar dentro do useEffect 
+  */
 
   useEffect(() => {
-    return () => {
-      const item2 = JSON.parse(localStorage.getItem(`bubleSort`));
-      const { bub_a, bub_e, bub_t } = item2;
-      setBubAcertos(bub_a);
-      setBubErros(bub_e);
-      setBubTentativas(bub_t);
-      const item = JSON.parse(localStorage.getItem(`dijkstra`));
-      const { acertos, erros, tentativas } = item;
-      setDijAcertos(acertos);
-      setDijErros(erros);
-      setDijTentativas(tentativas);
-    };
+    const item2 = JSON.parse(localStorage.getItem(`bubleSort`));
+    setBubAcertos(item2.acertos);
+    setBubErros(item2.erros);
+    setBubTentativas(item2.tentativas);
+    const item = JSON.parse(localStorage.getItem(`dijkstra`));
+    setDijAcertos(item.acertos);
+    setDijErros(item.erros);
+    setDijTentativas(item.tentativas);
+    const item3 = JSON.parse(localStorage.getItem(`selection`));
+    setSelAcertos(item3?.acertos);
+    setSelErros(item3?.erros);
+    setSelTentativas(item3?.tentativas);
   }, []);
 
   return (
@@ -50,7 +59,7 @@ const Home: NextPage = () => {
             </Link>
           </div>
           <div className="cell" data-title="Age">
-            Icon Texto, Icon Vídeo
+            aaa
           </div>
           <div className="cell" data-title="Occupation">
             {dij_acertos}
@@ -74,16 +83,22 @@ const Home: NextPage = () => {
             </Link>
           </div>
           <div className="cell" data-title="Age">
-            Icon Texto, Icon Vídeo
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://www.youtube.com/watch?v=GiNPe_678Ms&list=PL5TJqBvpXQv4l7nH-08fMfyl7aDFNW_fC&index=3"
+            >
+              <AiFillYoutube fontSize="20px" color="red" />
+            </a>
           </div>
           <div className="cell" data-title="Occupation">
-            a{bub_acertos}
+            {bub_acertos}
           </div>
           <div className="cell" data-title="Location">
-            b{bub_erros}
+            {bub_erros}
           </div>
           <div className="cell" data-title="Location">
-            c{bub_tentativas}
+            {bub_tentativas}
           </div>
           <div className="cell" data-title="Location">
             Somerville, MA
@@ -91,19 +106,25 @@ const Home: NextPage = () => {
         </div>
         <div className="row">
           <div className="cell" data-title="Name">
-            Maxwell Johnson
+            Selection Sort
           </div>
           <div className="cell" data-title="Age">
-            26
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://youtu.be/ZT_dT8yn48s?list=PL5TJqBvpXQv4l7nH-08fMfyl7aDFNW_fC"
+            >
+              <AiFillYoutube fontSize="20px" color="red" />
+            </a>
           </div>
           <div className="cell" data-title="Occupation">
-            UX Architect &amp; Designer
+            {sel_acertos}
           </div>
           <div className="cell" data-title="Location">
-            Arlington, MA
+            {sel_erros}
           </div>
           <div className="cell" data-title="Location">
-            Arlington, MA
+            {sel_tentativas}
           </div>
           <div className="cell" data-title="Location">
             Arlington, MA

@@ -5,12 +5,28 @@ import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { MdRefresh } from "react-icons/md";
 import axios from "axios";
+import { buble_initial } from "initial_codes/initial_codes";
+import { VscRunAll } from "react-icons/vsc";
 
 const Coding = () => {
   const [code, setCode] = useState("print('hello')");
   const [testCaseResults, setTestCaseResults] = useState([]);
+
+  // const [resultado, setResultado] = useState({});
   const router = useRouter();
   // console.log(router.query);
+  const [localData, setLocalData] = useState<any>({});
+
+  useEffect(() => {
+    const l = JSON.parse(localStorage.getItem(`${router.query.algoritmo}`));
+    setLocalData(l);
+
+    if (router.query.algoritmo === "bubleSort") {
+      setCode(buble_initial);
+    } else {
+      setCode("algoritmo sem template");
+    }
+  }, []);
 
   const checkCode = () => {
     axios
@@ -21,59 +37,88 @@ const Coding = () => {
         console.log("tt", testCaseResults);
         // Se não tem o algoritmo em questão no localstore define ele
         if (!localStorage.getItem(`${router.query.algoritmo}`)) {
-          const resultado = {
-            acertos: 0,
-            erros: 0,
-            tentativas: 0,
-          };
           localStorage.setItem(
             `${router.query.algoritmo}`,
-            JSON.stringify(resultado)
+            JSON.stringify({
+              acertos: 0,
+              erros: 0,
+              tentativas: 0,
+            })
           );
         }
         const { acertos, erros, tentativas } = JSON.parse(
           localStorage.getItem(`${router.query.algoritmo}`)
         );
         // Se acerto todas
+        // debugger;
         let acertei = true;
-        for (const iterator of testCaseResults) {
+        for (const iterator of data.testCaseResults) {
           console.log("ola for");
           console.log(iterator);
           if (iterator["ans"] === "False") {
             console.log("aceitar vai ser falso");
+            // debugger;
             acertei = false;
-            return;
           }
         }
+        let resultado = {};
+        // debugger;
         if (acertei) {
-          const resultado = {
+          // debugger;
+          resultado = {
             acertos: acertos + 1,
             erros: erros,
             tentativas: tentativas + 1,
           };
-          localStorage.setItem(
-            `${router.query.algoritmo}`,
-            JSON.stringify(resultado)
-          );
+
+          console.log("if", resultado);
         } else {
-          const resultado = {
+          debugger;
+          console.log("aumentando erros");
+          console.log("else", resultado);
+          resultado = {
             acertos: acertos,
             erros: erros + 1,
             tentativas: tentativas + 1,
           };
-          localStorage.setItem(
-            `${router.query.algoritmo}`,
-            JSON.stringify(resultado)
-          );
         }
+        console.log("indo setar localstorage");
+        localStorage.setItem(
+          `${router.query.algoritmo}`,
+          JSON.stringify(resultado)
+        );
       })
       .catch((err) => console.log(err));
   };
 
   return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <h1 style={{ color: "white" }}>{router.query.algoritmo}</h1>
+    <div style={{ height: "200vh", background: "aliceblue" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <h1 style={{ color: "black" }}>{router.query.algoritmo}</h1>
+        <div>
+          Acertos: {localData?.acertos} - Erros: {localData?.erros} -
+          Tentativas: {localData?.tentativas}
+        </div>
+        <button
+          style={{
+            marginTop: "8px",
+            padding: "8px 16px",
+            background: "#00F700",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+          }}
+          onClick={() => checkCode()}
+        >
+          <VscRunAll color="white" fontSize="24px" />
+        </button>
       </div>
       <div
         style={{
@@ -87,10 +132,11 @@ const Coding = () => {
         }}
       >
         <CodeMirror
-          value="console.log('hello world!');"
-          height="80vh"
+          value={code}
+          height="70vh"
           width="80vw"
           extensions={[javascript({ jsx: true })]}
+          // extensions={[python()]}
           // onChange={(value, viewUpdate) => {
           //   setCode(value);
           // }}
@@ -106,21 +152,23 @@ const Coding = () => {
           // background: "red",
           padding: "10px",
         }}
-      >
-        <button onClick={() => checkCode()}>RUN</button>
-      </div>
+      ></div>
       <div
         style={{
-          background: "yellow",
+          background: "white",
           width: "80vw",
           margin: "auto",
+          minHeight: "300px",
         }}
       >
         <div
           style={{
-            width: "15vw",
+            // width: "15vw",
             display: "flex",
             flexDirection: "column",
+            // backgroundColor: "blue",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <div
@@ -130,8 +178,28 @@ const Coding = () => {
               alignItems: "center",
             }}
           >
-            <div style={{ fontSize: "20px" }}>Input</div>
-            <MdRefresh />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                // background: "red",
+                gap: "5px",
+              }}
+            >
+              Input:{" "}
+              <div
+                style={{ background: "blue", width: "10px", height: "10px" }}
+              ></div>
+              Output:{" "}
+              <div
+                style={{ background: "pink", width: "10px", height: "10px" }}
+              ></div>
+              Expected:{" "}
+              <div
+                style={{ background: "green", width: "10px", height: "10px" }}
+              ></div>
+            </div>
           </div>
           <div>
             <ul>
@@ -139,13 +207,19 @@ const Coding = () => {
                 return (
                   <li
                     style={{
-                      background: "red",
+                      background: "aliceblue",
                       display: "flex",
-                      width: "40vw",
+                      width: "60vw",
                     }}
                     key={i}
                   >
-                    Entrada: {res["input"]} - Esperado: {res["expected"]} -
+                    <div>{JSON.stringify(res["input"])} -</div>
+                    <div style={{ color: "pink" }}>
+                      {JSON.stringify(res["output"])} -
+                    </div>
+                    <div style={{ color: "green" }}>
+                      {JSON.stringify(res["expected"])}
+                    </div>
                     {res["ans"] === "True" ? "✅ Certo" : "❌ Errado"}
                   </li>
                 );
